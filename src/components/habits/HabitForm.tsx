@@ -21,8 +21,10 @@ export default function HabitForm({ initialData, onSuccess }: HabitFormProps) {
 
         // 1. Logic: Validate name using the required utility
         const validation = validateHabitName(name);
-        if (!validation.isValid) {
-            setError(validation.error || null);
+        const trimmed = typeof validation === 'string' ? validation : '';
+        // If validation is an error message (contains the word 'Habit name'), treat as error
+        if (trimmed.toLowerCase().includes('habit name') && trimmed !== name.trim()) {
+            setError(trimmed);
             return;
         }
 
@@ -77,7 +79,7 @@ export default function HabitForm({ initialData, onSuccess }: HabitFormProps) {
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="p-2 border rounded"
+                    className="p-2 border rounded text-gray-900"
                     placeholder="e.g. Drink Water"
                 />
                 {error && <span className="text-red-500 text-xs">{error}</span>}
@@ -90,7 +92,7 @@ export default function HabitForm({ initialData, onSuccess }: HabitFormProps) {
                     data-testid="habit-description-input"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    className="p-2 border rounded"
+                    className="p-2 border rounded text-gray-900"
                     placeholder="Stay hydrated throughout the day"
                 />
             </div>
@@ -102,7 +104,7 @@ export default function HabitForm({ initialData, onSuccess }: HabitFormProps) {
                     data-testid="habit-frequency-select"
                     disabled
                     value="daily"
-                    className="p-2 border rounded bg-gray-200"
+                    className="p-2 border rounded bg-gray-200 text-gray-900"
                 >
                     <option value="daily">Daily</option>
                 </select>

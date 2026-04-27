@@ -40,7 +40,7 @@ export default function LoginForm() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="w-full border p-2 rounded"
+                    className="w-full border p-2 rounded text-gray-900"
                 />
             </div>
             <div>
@@ -51,7 +51,7 @@ export default function LoginForm() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="w-full border p-2 rounded"
+                    className="w-full border p-2 rounded text-gray-900"
                 />
             </div>
             {error && (

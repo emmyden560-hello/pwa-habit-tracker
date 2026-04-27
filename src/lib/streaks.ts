@@ -17,8 +17,8 @@ export const calculateCurrentStreak = (
   const diffInTime = todayDate.getTime() - lastCompletionDate.getTime();
   const diffInDays = Math.floor(diffInTime / (1000 * 3600 * 24));
 
-  // 2. If the most recent completion is older than yesterday, streak is broken
-  if (diffInDays > 1) return 0;
+  // 2. If the most recent completion is not for today, streak is broken
+  if (diffInDays > 0) return 0;
 
   // 3. Count backward through consecutive days
   let streak = 0;
@@ -32,8 +32,8 @@ export const calculateCurrentStreak = (
       const prevDate = new Date(sortedDates[i - 1]);
       const gap = (prevDate.getTime() - compDate.getTime()) / (1000 * 3600 * 24);
       
-      // If there's a gap of more than 1 day between completions, streak ends
-      if (gap > 1) break;
+      // If there's a gap of more than 1 day between completions, streak is broken entirely
+      if (gap > 1) return 0;
     }
     
     streak++;

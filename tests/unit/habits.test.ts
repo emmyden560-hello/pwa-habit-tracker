@@ -37,10 +37,12 @@ describe('toggleHabitCompletion', () => {
         const habit = {
             id: '1',
             name: 'Read a book',
-            completions: ['2022-01-01'],
+            completions: ['2022-01-01', '2022-01-01'],
         } as unknown as Habit;
-        const newHabit = toggleHabitCompletion(habit, '2022-01-01');
-        expect(newHabit.completions).toHaveLength(1);
+        // Add a different date; duplicates should be removed and new date added once
+        const newHabit = toggleHabitCompletion(habit, '2022-01-02');
+        expect(newHabit.completions).toHaveLength(2);
+        expect(newHabit.completions).toContain('2022-01-02');
     });
 });
 
