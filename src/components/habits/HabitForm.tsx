@@ -72,7 +72,7 @@ export default function HabitForm({ initialData, onSuccess }: HabitFormProps) {
             className="flex flex-col gap-4 p-4 border rounded bg-gray-50"
         >
             <div className="flex flex-col gap-1">
-                <label htmlFor="habit-name" className="text-sm font-medium">Habit Name</label>
+                <label htmlFor="habit-name" className="text-sm font-medium text-blue-600">Habit Name</label>
                 <input
                     id="habit-name"
                     data-testid="habit-name-input"
@@ -86,7 +86,7 @@ export default function HabitForm({ initialData, onSuccess }: HabitFormProps) {
             </div>
 
             <div className="flex flex-col gap-1">
-                <label htmlFor="habit-desc" className="text-sm font-medium">Description (Optional)</label>
+                <label htmlFor="habit-desc" className="text-sm font-medium text-blue-600">Description (Optional)</label>
                 <textarea
                     id="habit-desc"
                     data-testid="habit-description-input"
@@ -98,7 +98,7 @@ export default function HabitForm({ initialData, onSuccess }: HabitFormProps) {
             </div>
 
             <div className="flex flex-col gap-1">
-                <label htmlFor="habit-freq" className="text-sm font-medium">Frequency</label>
+                <label htmlFor="habit-freq" className="text-sm font-medium text-blue-600">Frequency</label>
                 <select
                     id="habit-freq"
                     data-testid="habit-frequency-select"

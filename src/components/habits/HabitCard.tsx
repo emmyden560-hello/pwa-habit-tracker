@@ -9,9 +9,11 @@ import { toggleHabitCompletion } from "@/lib/habits";
 interface HabitCardProps {
     habit: Habit;
     onUpdate?: () => void; // Used to refresh the list after a state change
+    onEdit?: (habit: Habit) => void; // Called when edit button is clicked
+    onDelete?: (habitId: string) => void; // Called when delete button is clicked
 }
 
-export default function HabitCard({ habit, onUpdate }: HabitCardProps) {
+export default function HabitCard({ habit, onUpdate, onEdit, onDelete }: HabitCardProps) {
     // UI Contract: Use the slug utility for test IDs
     const slug = useMemo(() => getHabitSlug(habit.name), [habit.name]);
 
@@ -40,6 +42,14 @@ export default function HabitCard({ habit, onUpdate }: HabitCardProps) {
         if (onUpdate) onUpdate();
     };
 
+    const handleEdit = () => {
+        if (onEdit) onEdit(habit);
+    };
+
+    const handleDelete = () => {
+        if (onDelete) onDelete(habit.id);
+    };
+
     return (
         <div
             data-testid={`habit-card-${slug}`}
@@ -63,8 +73,8 @@ export default function HabitCard({ habit, onUpdate }: HabitCardProps) {
                     data-testid={`habit-complete-${slug}`}
                     onClick={handleToggle}
                     className={`px-4 py-2 rounded transition-colors ${isCompletedToday
-                            ? "bg-green-500 text-white"
-                            : "bg-gray-200 text-gray-700"
+                        ? "bg-green-500 text-white"
+                        : "bg-gray-200 text-gray-700"
                         }`}
                 >
                     {isCompletedToday ? "Completed" : "Mark Complete"}
@@ -72,6 +82,7 @@ export default function HabitCard({ habit, onUpdate }: HabitCardProps) {
 
                 <button
                     data-testid={`habit-edit-${slug}`}
+                    onClick={handleEdit}
                     className="text-blue-600 text-sm font-medium"
                 >
                     Edit
@@ -79,6 +90,7 @@ export default function HabitCard({ habit, onUpdate }: HabitCardProps) {
 
                 <button
                     data-testid={`habit-delete-${slug}`}
+                    onClick={handleDelete}
                     className="text-red-600 text-sm font-medium"
                 >
                     Delete

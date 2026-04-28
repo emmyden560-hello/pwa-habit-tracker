@@ -31,7 +31,7 @@ export default function SignupForm() {
         <form onSubmit={handleSignup} className="space-y-4 w-full max-w-sm">
             <div>
                 <input
-                    data-testid="signup-email"
+                    data-testid="auth-signup-email"
                     type="email"
                     placeholder="Email Address"
                     value={email}
@@ -42,7 +42,7 @@ export default function SignupForm() {
             </div>
             <div>
                 <input
-                    data-testid="signup-password"
+                    data-testid="auth-signup-password"
                     type="password"
                     placeholder="Password"
                     value={password}
@@ -52,12 +52,12 @@ export default function SignupForm() {
                 />
             </div>
             {error && (
-                <p data-testid="signup-error" className="text-red-500 text-sm">
+                <p data-testid="auth-signup-error" className="text-red-500 text-sm">
                     {error}
                 </p>
             )}
             <button
-                data-testid="signup-submit"
+                data-testid="auth-signup-button"
                 type="submit"
                 className="w-full bg-green-600 text-white p-2 rounded font-bold"
             >
