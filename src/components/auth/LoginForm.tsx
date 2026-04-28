@@ -34,7 +34,7 @@ export default function LoginForm() {
         <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-sm">
             <div>
                 <input
-                    data-testid="login-email"
+                    data-testid="auth-login-email"
                     type="email"
                     placeholder="Email Address"
                     value={email}
@@ -45,7 +45,7 @@ export default function LoginForm() {
             </div>
             <div>
                 <input
-                    data-testid="login-password"
+                    data-testid="auth-login-password"
                     type="password"
                     placeholder="Password"
                     value={password}
@@ -55,12 +55,12 @@ export default function LoginForm() {
                 />
             </div>
             {error && (
-                <p data-testid="login-error" className="text-red-500 text-sm">
+                <p data-testid="auth-login-error" className="text-red-500 text-sm">
                     {error}
                 </p>
             )}
             <button
-                data-testid="login-submit"
+                data-testid="auth-login-submit"
                 type="submit"
                 className="w-full bg-blue-600 text-white p-2 rounded font-bold"
             >

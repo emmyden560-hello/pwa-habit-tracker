@@ -26,9 +26,9 @@ describe('Auth Flow Integration', () => {
         render(<LoginForm />);
 
         // Action: Fill out and submit form
-        fireEvent.change(screen.getByTestId('login-email'), { target: { value: 'wizard@test.com' } });
-        fireEvent.change(screen.getByTestId('login-password'), { target: { value: 'password123' } });
-        fireEvent.click(screen.getByTestId('login-submit'));
+        fireEvent.change(screen.getByTestId('auth-login-email'), { target: { value: 'wizard@test.com' } });
+        fireEvent.change(screen.getByTestId('auth-login-password'), { target: { value: 'password123' } });
+        fireEvent.click(screen.getByTestId('auth-login-submit'));
 
         // Assert: Check if session was created and user redirected
         await waitFor(() => {
@@ -41,12 +41,12 @@ describe('Auth Flow Integration', () => {
     it('should display an error message for non-existent users', async () => {
         render(<LoginForm />);
 
-        fireEvent.change(screen.getByTestId('login-email'), { target: { value: 'unknown@test.com' } });
-        fireEvent.change(screen.getByTestId('login-password'), { target: { value: 'pass' } });
-        fireEvent.click(screen.getByTestId('login-submit'));
+        fireEvent.change(screen.getByTestId('auth-login-email'), { target: { value: 'unknown@test.com' } });
+        fireEvent.change(screen.getByTestId('auth-login-password'), { target: { value: 'pass' } });
+        fireEvent.click(screen.getByTestId('auth-login-submit'));
 
         await waitFor(() => {
-            expect(screen.getByTestId('login-error')).toBeDefined();
+            expect(screen.getByTestId('auth-login-error')).toBeDefined();
             expect(mockPush).not.toHaveBeenCalled();
         });
     });

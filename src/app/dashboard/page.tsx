@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 export default function DashboardPage() {
     const router = useRouter();
     const [refreshList, setRefreshList] = useState(0);
+    const [showForm, setShowForm] = useState(false);
 
     const handleLogout = () => {
         clearSession();
@@ -17,6 +18,7 @@ export default function DashboardPage() {
 
     const handleHabitCreated = () => {
         setRefreshList(prev => prev + 1);
+        setShowForm(false);
     };
 
     return (
@@ -25,6 +27,7 @@ export default function DashboardPage() {
                 <header className="flex justify-between items-center mb-8">
                     <h1 className="text-2xl font-bold text-blue-900">My Habits</h1>
                     <button
+                        data-testid="auth-logout-button"
                         onClick={handleLogout}
                         className="text-sm text-red-600 font-medium"
                     >
@@ -32,7 +35,15 @@ export default function DashboardPage() {
                     </button>
                 </header>
 
-                <HabitForm onSuccess={handleHabitCreated} />
+                <button
+                    data-testid="create-habit-button"
+                    onClick={() => setShowForm(!showForm)}
+                    className="w-full mb-4 bg-blue-600 text-white p-2 rounded font-bold hover:bg-blue-700 transition-colors"
+                >
+                    {showForm ? 'Cancel' : 'Create New Habit'}
+                </button>
+
+                {showForm && <HabitForm onSuccess={handleHabitCreated} />}
                 <HabitList key={refreshList} />
             </div>
         </ProtectedRoute>

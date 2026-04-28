@@ -57,7 +57,7 @@ export default function SignupForm() {
                 </p>
             )}
             <button
-                data-testid="auth-signup-button"
+                data-testid="auth-signup-submit"
                 type="submit"
                 className="w-full bg-green-600 text-white p-2 rounded font-bold"
             >
