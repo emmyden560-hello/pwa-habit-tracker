@@ -11,8 +11,8 @@ const ASSETS_TO_CACHE = [
     '/dashboard',
     '/manifest.json',
     // Static app assets and generated icons
-    '/icons/manifest-icon-192.maskable.png',
-    '/icons/manifest-icon-512.maskable.png',
+    '/icons/icon-192.png',
+    '/icons/icon-512.png',
     '/icons/favicon-196.png',
     '/icons/apple-icon-180.png'
 ];

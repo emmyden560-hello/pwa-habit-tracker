@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   description: 'Stage 3 Habit Tracker Task',
   manifest: '/manifest.json',
   icons: {
-    icon: '/icons/manifest-icon-192.maskable.png',
+    icon: '/icons/icon-192.png',
   }
 };
 

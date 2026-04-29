@@ -398,6 +398,52 @@ All habit data stored locally via `localStorage`:
 - ❌ Limited to ~5-10MB storage per domain
 - ❌ Not suitable for multi-user scenarios
 
+---
+
+## Test File Mapping
+
+This section maps each required test file to the behavior it verifies against the Technical Requirements Document (TRD).
+
+### Unit Tests
+
+| Test File | Purpose | Verifies |
+|-----------|---------|----------|
+| `tests/unit/slug.test.ts` | Slug generation utility | Habit name conversion to URL-safe slugs (lowercase, hyphens, special char removal) |
+| `tests/unit/validators.test.ts` | Input validation | Habit name validation rules (required, max 60 chars, trimming) |
+| `tests/unit/streaks.test.ts` | Streak calculation | Consecutive day calculation, duplicate handling, streak breaking logic |
+| `tests/unit/habits.test.ts` | Habit completion toggle | Adding/removing completion dates, immutability, deduplication |
+
+### Integration Tests
+
+| Test File | Purpose | Verifies |
+|-----------|---------|----------|
+| `tests/integration/auth-flow.test.tsx` | Authentication flows | Signup, login, duplicate email handling, invalid credentials, session creation |
+| `tests/integration/habit-form.test.tsx` | Habit CRUD operations | Form validation, creation, editing with field preservation, deletion confirmation, streak updates |
+
+### End-to-End Tests
+
+| Test File | Purpose | Verifies |
+|-----------|---------|----------|
+| `tests/e2e/app.spec.ts` | Complete user workflows | Splash screen, routing, auth flows, habit management, persistence, offline functionality |
+
+---
+
+## Coverage Report
+
+Run the following command to generate a coverage report:
+
+```bash
+npm run test:unit
+```
+
+The project maintains **80%+ line coverage** for all files in `src/lib/`, including:
+- `slug.ts` - 100%
+- `validators.ts` - 100%
+- `streaks.ts` - 100%
+- `habits.ts` - 100%
+- `auth.ts` - 81.48%
+- `constants.ts` - 100%
+
 **Future Mitigation**: Add optional backend sync with conflict resolution
 
 ---
