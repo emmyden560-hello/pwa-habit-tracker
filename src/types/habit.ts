@@ -1,4 +1,4 @@
-export interface Habit {
+export type Habit = {
     id: string;
     userId: string;
     name: string;
@@ -6,7 +6,7 @@ export interface Habit {
     frequency: 'daily';
     createdAt: string;
     completions: string[];
-}
+};
 
 export interface HabitFormData {
     name: string;

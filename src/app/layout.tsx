@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   title: 'Habit Tracker PWA',
   description: 'Stage 3 Habit Tracker Task',
   manifest: '/manifest.json',
+  icons: {
+    icon: '/icons/manifest-icon-192.maskable.png',
+  }
 };
 
 export default function RootLayout({
@@ -21,7 +24,8 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <meta name="theme-color" content="#000000" />
-        <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+        <link rel="apple-touch-icon" href="/icons/apple-icon-180.png" />
+        <link rel="icon" href="/icons/favicon-196.png" />
       </head>
       <body className={inter.className}>
         <main className="min-h-screen bg-gray-50">

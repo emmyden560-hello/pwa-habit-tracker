@@ -29,7 +29,7 @@ export default function DashboardPage() {
                     <button
                         data-testid="auth-logout-button"
                         onClick={handleLogout}
-                        className="text-sm text-red-600 font-medium"
+                        className="text-sm text-red-600 cursor-pointer font-medium"
                     >
                         Logout
                     </button>
@@ -38,7 +38,7 @@ export default function DashboardPage() {
                 <button
                     data-testid="create-habit-button"
                     onClick={() => setShowForm(!showForm)}
-                    className="w-full mb-4 bg-blue-600 text-white p-2 rounded font-bold hover:bg-blue-700 transition-colors"
+                    className="w-full mb-4 bg-blue-600 text-white p-2 rounded font-bold hover:bg-blue-700 cursor-pointer transition-colors"
                 >
                     {showForm ? 'Cancel' : 'Create New Habit'}
                 </button>

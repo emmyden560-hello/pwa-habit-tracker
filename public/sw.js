@@ -10,9 +10,11 @@ const ASSETS_TO_CACHE = [
     '/signup',
     '/dashboard',
     '/manifest.json',
-    '/globals.css',
-    '/icons/icon-192.png',
-    '/icons/icon-512.png'
+    // Static app assets and generated icons
+    '/icons/manifest-icon-192.maskable.png',
+    '/icons/manifest-icon-512.maskable.png',
+    '/icons/favicon-196.png',
+    '/icons/apple-icon-180.png'
 ];
 
 // 1. Install Event: Cache the App Shell
@@ -42,15 +44,43 @@ self.addEventListener('activate', (event) => {
 
 // 3. Fetch Event: Serve from cache, fallback to network
 self.addEventListener('fetch', (event) => {
+    const requestUrl = new URL(event.request.url);
+
+    // Always try to serve navigation requests with cached app shell as a fallback
+    if (event.request.mode === 'navigate') {
+        event.respondWith(
+            fetch(event.request)
+                .then((networkResponse) => {
+                    return networkResponse;
+                })
+                .catch(() => caches.match('/'))
+        );
+        return;
+    }
+
+    // Runtime cache for Next.js static assets (/_next/). Use cache-first.
+    if (requestUrl.pathname.startsWith('/_next/') || requestUrl.pathname.startsWith('/static/')) {
+        event.respondWith(
+            caches.match(event.request).then((cached) => {
+                if (cached) return cached;
+                return fetch(event.request).then((networkResponse) => {
+                    return caches.open(CACHE_NAME).then((cache) => {
+                        cache.put(event.request, networkResponse.clone());
+                        return networkResponse;
+                    });
+                }).catch(() => {
+                    // If asset not cached and network fails, return cached app shell
+                    return caches.match('/');
+                });
+            })
+        );
+        return;
+    }
+
+    // Default behavior: try cache first, then network
     event.respondWith(
         caches.match(event.request).then((response) => {
-            // Return cached asset or fetch from network
-            return response || fetch(event.request).catch(() => {
-                // Fallback for navigation requests when offline
-                if (event.request.mode === 'navigate') {
-                    return caches.match('/');
-                }
-            });
+            return response || fetch(event.request);
         })
     );
 });

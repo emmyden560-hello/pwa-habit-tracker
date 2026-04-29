@@ -1,9 +1,9 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import LoginForm from '@/components/auth/LoginForm';
+import SignupForm from '@/components/auth/SignupForm';
 import { STORAGE_KEYS } from '@/lib/constants';
 
-// 1. Mock the Next.js router
 const mockPush = vi.fn();
 vi.mock('next/navigation', () => ({
     useRouter: () => ({
@@ -12,42 +12,77 @@ vi.mock('next/navigation', () => ({
     }),
 }));
 
-describe('Auth Flow Integration', () => {
+describe('auth flow', () => {
     beforeEach(() => {
         localStorage.clear();
         vi.clearAllMocks();
     });
 
-    it('should successfully login and redirect to dashboard with valid credentials', async () => {
-        // Setup: Pre-register a user in localStorage
-        const testUser = { email: 'wizard@test.com', password: 'password123', id: '1' };
-        localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify([testUser]));
+    it('submits the signup form and creates a session', async () => {
+        render(<SignupForm />);
 
-        render(<LoginForm />);
+        fireEvent.change(screen.getByTestId('auth-signup-email'), { target: { value: 'test@example.com' } });
+        fireEvent.change(screen.getByTestId('auth-signup-password'), { target: { value: 'Password123!' } });
+        fireEvent.click(screen.getByTestId('auth-signup-submit'));
 
-        // Action: Fill out and submit form
-        fireEvent.change(screen.getByTestId('auth-login-email'), { target: { value: 'wizard@test.com' } });
-        fireEvent.change(screen.getByTestId('auth-login-password'), { target: { value: 'password123' } });
-        fireEvent.click(screen.getByTestId('auth-login-submit'));
-
-        // Assert: Check if session was created and user redirected
         await waitFor(() => {
             const session = JSON.parse(localStorage.getItem(STORAGE_KEYS.SESSION) || '{}');
-            expect(session.email).toBe('wizard@test.com');
+            expect(session.email).toBe('test@example.com');
             expect(mockPush).toHaveBeenCalledWith('/dashboard');
         });
     });
 
-    it('should display an error message for non-existent users', async () => {
+    it('shows an error for duplicate signup email', async () => {
+        // Pre-register a user
+        localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify([{
+            id: '1',
+            email: 'existing@example.com',
+            password: 'Pass123!',
+            createdAt: new Date().toISOString()
+        }]));
+
+        render(<SignupForm />);
+
+        fireEvent.change(screen.getByTestId('auth-signup-email'), { target: { value: 'existing@example.com' } });
+        fireEvent.change(screen.getByTestId('auth-signup-password'), { target: { value: 'Password123!' } });
+        fireEvent.click(screen.getByTestId('auth-signup-submit'));
+
+        await waitFor(() => {
+            expect(screen.getByText(/User already exists/i)).toBeDefined();
+        });
+    });
+
+    it('submits the login form and stores the active session', async () => {
+        // Pre-register a user
+        localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify([{
+            id: '1',
+            email: 'user@example.com',
+            password: 'Password123!',
+            createdAt: new Date().toISOString()
+        }]));
+
         render(<LoginForm />);
 
-        fireEvent.change(screen.getByTestId('auth-login-email'), { target: { value: 'unknown@test.com' } });
-        fireEvent.change(screen.getByTestId('auth-login-password'), { target: { value: 'pass' } });
+        fireEvent.change(screen.getByTestId('auth-login-email'), { target: { value: 'user@example.com' } });
+        fireEvent.change(screen.getByTestId('auth-login-password'), { target: { value: 'Password123!' } });
         fireEvent.click(screen.getByTestId('auth-login-submit'));
 
         await waitFor(() => {
-            expect(screen.getByTestId('auth-login-error')).toBeDefined();
-            expect(mockPush).not.toHaveBeenCalled();
+            const session = JSON.parse(localStorage.getItem(STORAGE_KEYS.SESSION) || '{}');
+            expect(session.email).toBe('user@example.com');
+            expect(mockPush).toHaveBeenCalledWith('/dashboard');
+        });
+    });
+
+    it('shows an error for invalid login credentials', async () => {
+        render(<LoginForm />);
+
+        fireEvent.change(screen.getByTestId('auth-login-email'), { target: { value: 'wrong@example.com' } });
+        fireEvent.change(screen.getByTestId('auth-login-password'), { target: { value: 'WrongPass123!' } });
+        fireEvent.click(screen.getByTestId('auth-login-submit'));
+
+        await waitFor(() => {
+            expect(screen.getByText(/Invalid email or password/i)).toBeDefined();
         });
     });
 });

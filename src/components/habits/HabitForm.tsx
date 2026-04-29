@@ -21,10 +21,8 @@ export default function HabitForm({ initialData, onSuccess }: HabitFormProps) {
 
         // 1. Logic: Validate name using the required utility
         const validation = validateHabitName(name);
-        const trimmed = typeof validation === 'string' ? validation : '';
-        // If validation is an error message (contains the word 'Habit name'), treat as error
-        if (trimmed.toLowerCase().includes('habit name') && trimmed !== name.trim()) {
-            setError(trimmed);
+        if (!validation.valid) {
+            setError(validation.error || 'Validation failed');
             return;
         }
 
@@ -44,7 +42,7 @@ export default function HabitForm({ initialData, onSuccess }: HabitFormProps) {
             // Edit Habit Rule: Retain same id, userId, createdAt, and completions
             const updatedHabits = allHabits.map((h) =>
                 h.id === initialData.id
-                    ? { ...h, name, description }
+                    ? { ...h, name: validation.value, description }
                     : h
             );
             localStorage.setItem("habit-tracker-habits", JSON.stringify(updatedHabits));
@@ -53,7 +51,7 @@ export default function HabitForm({ initialData, onSuccess }: HabitFormProps) {
             const newHabit: Habit = {
                 id: crypto.randomUUID(),
                 userId: session.userId,
-                name,
+                name: validation.value,
                 description,
                 frequency: "daily",
                 createdAt: new Date().toISOString(),

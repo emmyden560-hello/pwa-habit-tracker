@@ -5,6 +5,7 @@ import { Habit } from "@/types/habit";
 import { getHabitSlug } from "@/lib/slug";
 import { calculateCurrentStreak } from "@/lib/streaks";
 import { toggleHabitCompletion } from "@/lib/habits";
+import { storage, STORAGE_KEYS } from "@/lib/storage";
 
 interface HabitCardProps {
     habit: Habit;
@@ -18,7 +19,7 @@ export default function HabitCard({ habit, onUpdate, onEdit, onDelete }: HabitCa
     const slug = useMemo(() => getHabitSlug(habit.name), [habit.name]);
 
     // Logic: Get today's date in YYYY-MM-DD format for streak and completion checks
-    const today = new Array(new Date().toISOString().split("T")[0])[0];
+    const today = new Date().toISOString().split("T")[0];
 
     const streak = useMemo(() =>
         calculateCurrentStreak(habit.completions, today),
@@ -28,17 +29,14 @@ export default function HabitCard({ habit, onUpdate, onEdit, onDelete }: HabitCa
     const isCompletedToday = habit.completions.includes(today);
 
     const handleToggle = () => {
-        const allHabitsStr = localStorage.getItem("habit-tracker-habits");
-        const allHabits: Habit[] = allHabitsStr ? JSON.parse(allHabitsStr) : [];
+        const allHabits: Habit[] = storage.get<Habit[]>(STORAGE_KEYS.HABITS) || [];
 
         // Use the required utility for the update
         const updatedHabit = toggleHabitCompletion(habit, today);
 
-        const updatedAllHabits = allHabits.map((h) =>
-            h.id === habit.id ? updatedHabit : h
-        );
+        const updatedAllHabits = allHabits.map((h) => (h.id === habit.id ? updatedHabit : h));
 
-        localStorage.setItem("habit-tracker-habits", JSON.stringify(updatedAllHabits));
+        storage.set(STORAGE_KEYS.HABITS, updatedAllHabits);
         if (onUpdate) onUpdate();
     };
 
@@ -57,44 +55,48 @@ export default function HabitCard({ habit, onUpdate, onEdit, onDelete }: HabitCa
         >
             <div className="flex justify-between items-start">
                 <div>
-                    <h3 className="text-lg font-bold capitalize">{habit.name}</h3>
+                    <h3 className="text-lg font-bold text-blue-700 capitalize">{habit.name}</h3>
                     <p className="text-sm text-gray-600">{habit.description}</p>
                 </div>
 
                 {/* UI Contract: Streak display */}
-                <div data-testid={`habit-streak-${slug}`} className="text-sm font-medium">
+                <div data-testid={`habit-streak-${slug}`} className="text-sm font-medium text-gray-500">
                     Streak: {streak}
                 </div>
             </div>
 
-            <div className="flex items-center gap-2 mt-2">
+            <div className="flex items-center justify-between mt-2">
                 {/* UI Contract: Completion toggle */}
                 <button
                     data-testid={`habit-complete-${slug}`}
                     onClick={handleToggle}
-                    className={`px-4 py-2 rounded transition-colors ${isCompletedToday
+                    type="button"
+                    className={`px-4 py-2 cursor-pointer rounded transition-colors ${isCompletedToday
                         ? "bg-green-500 text-white"
                         : "bg-gray-200 text-gray-700"
                         }`}
                 >
                     {isCompletedToday ? "Completed" : "Mark Complete"}
                 </button>
+                <div className='flex items-center gap-3'>
+                    <button
+                        data-testid={`habit-edit-${slug}`}
+                        onClick={handleEdit}
+                        type="button"
+                        className="text-blue-600 cursor-pointer text-sm font-medium"
+                    >
+                        Edit
+                    </button>
 
-                <button
-                    data-testid={`habit-edit-${slug}`}
-                    onClick={handleEdit}
-                    className="text-blue-600 text-sm font-medium"
-                >
-                    Edit
-                </button>
-
-                <button
-                    data-testid={`habit-delete-${slug}`}
-                    onClick={handleDelete}
-                    className="text-red-600 text-sm font-medium"
-                >
-                    Delete
-                </button>
+                    <button
+                        data-testid={`habit-delete-${slug}`}
+                        onClick={handleDelete}
+                        type="button"
+                        className="text-red-600 cursor-pointer text-sm font-medium"
+                    >
+                        Delete
+                    </button>
+                </div>
             </div>
         </div>
     );
