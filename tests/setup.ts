@@ -9,7 +9,7 @@ class MockDate extends RealDate {
     if (args.length === 0) {
       super(MOCK_NOW);
     } else {
-      super(...args as any);
+      super(...(args as any[]));
     }
   }
   static now() {
